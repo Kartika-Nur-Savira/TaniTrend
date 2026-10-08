@@ -1,117 +1,92 @@
-# Analisis Tren dan Prediksi Nilai Tukar Petani (NTP) Jawa Tengah 2019–2026
+# Analisis Tren dan Perbandingan Model Forecasting Nilai Tukar Petani (NTP) Jawa Tengah 🌾
 
-## Deskripsi
+[![Dashboard](https://img.shields.io/badge/Interactive-Web%20Dashboard-emerald)](https://kartika-nur-savira.github.io/Forecasting-NTP-Jawa-Tengah-/)
+[![Data Source](https://img.shields.io/badge/Data%20Source-BPS%20Jawa%20Tengah-blue)](https://jateng.bps.go.id)
+[![Best Model](https://img.shields.io/badge/Best%20Model-SARIMAX(0%2C1%2C1)(2%2C0%2C0)[12]-indigo)](#performa-model-forecasting)
 
-Proyek ini membahas analisis tren dan prediksi **Nilai Tukar Petani (NTP) Jawa Tengah** berdasarkan data periode 2019–2026. NTP digunakan sebagai salah satu indikator untuk menggambarkan tingkat kesejahteraan dan daya beli petani melalui perbandingan indeks harga yang diterima dan dibayar oleh petani.
+Repository ini berisi analisis time series komprehensif, eksplorasi data (EDA), dekomposisi musiman, benchmarking model peramalan (**Moving Average**, **Holt-Winters**, dan **SARIMA**), serta **Dashboard Web Interaktif** untuk **Nilai Tukar Petani (NTP) Provinsi Jawa Tengah** periode 2019–2026/2027.
 
-Analisis dilakukan untuk melihat pola perubahan NTP dari waktu ke waktu, mengidentifikasi perubahan bulanan dan tahunan, serta melakukan forecasting untuk memproyeksikan nilai NTP pada periode mendatang.
+---
 
-## Tujuan
+## 👥 Tim Peneliti (Tim 5)
+- **Kartika Nur Savira**
+- **Diyanti Pratiwi**
 
-- Menganalisis tren NTP Jawa Tengah selama periode 2019–2026.
-- Mengidentifikasi pola perubahan NTP secara bulanan dan tahunan.
-- Membandingkan beberapa metode forecasting.
-- Memprediksi nilai NTP Jawa Tengah untuk periode mendatang.
-- Menghasilkan insight yang dapat digunakan sebagai bahan pertimbangan dalam pemantauan kondisi petani.
+---
 
-## Dataset
+## 📊 Ringkasan Temuan & Statistik Deskriptif
 
-Dataset yang digunakan merupakan data **Nilai Tukar Petani (NTP) Provinsi Jawa Tengah** periode 2019–2026.
+- **Rentang Pengamatan:** Januari 2019 – April 2026 (**88 Bulan**)
+- **Pertumbuhan Total:** Naik dari `103.77` (Jan 2019) ke `114.90` (Apr 2026) (**+11.13 poin / +10.73%**)
+- **Rata-rata NTP:** `107.61` (Standar Deviasi: `±6.11`, Koefisien Variasi: `5.68%`)
+- **Titik Terendah (Krisis):** `98.71` (April 2021) — periode defisit riil akibat disrupsi pandemi COVID-19
+- **Titik Tertinggi (Puncak):** `121.94` (Februari 2024) — lonjakan harga komoditas pangan
+- **Distribusi Status:** **98.86% Bulan berada di zona Surplus** ($NTP > 100$)
 
-Variabel utama:
-- Periode/Bulan
-- Nilai Tukar Petani (NTP)
+---
 
-### Interpretasi NTP
+## 🤖 Perbandingan Performa Model Forecasting (Test Set 18 Bulan)
 
-| Nilai NTP | Kategori |
-|---|---|
-| NTP > 100 | Petani Surplus |
-| NTP = 100 | Petani Impas |
-| NTP < 100 | Petani Defisit |
+Pengujian dilakukan dengan pembagian data *Train* (80% / 70 bulan) dan *Test* (20% / 18 bulan):
 
-## Metodologi
+| Peringkat | Model Forecasting | Spesifikasi | MAE | RMSE | MAPE (%) | Status |
+| :---: | :--- | :--- | :---: | :---: | :---: | :---: |
+| 🥇 **1** | **SARIMA (Auto)** | **SARIMAX(0,1,1)(2,0,0)[12]** | **1.330** | **1.521** | **1.157%** | **Model Terbaik** |
+| 🥈 2 | Holt-Winters | Triple Exponential Smoothing (Add) | 1.345 | 1.501 | 1.169% | Kompetitif |
+| 🥉 3 | Moving Average | Rolling Window 12 Bulan (MA-12) | 1.558 | 1.879 | 1.351% | Baseline |
 
-Tahapan analisis yang dilakukan:
+> **Kesimpulan Model:** Model **SARIMA** terpilih sebagai model terbaik karena menghasilkan nilai **MAPE terendah (1.157%)** berkat kemampuannya menangkap autokorelasi musiman 12 & 24 bulan secara optimal.
 
-1. **Data Collecting**  
-   Mengumpulkan data NTP Jawa Tengah periode 2019–2026.
+---
 
-2. **Exploratory Data Analysis (EDA)**  
-   Melakukan eksplorasi data dan identifikasi pola musiman.
+## 🔮 Proyeksi Masa Depan (Mei 2026 – Desember 2027)
+- **Rentang Perkiraan Proyeksi:** `114.92 – 118.69` (dengan batas atas hingga `121.67`)
+- **Rata-rata Proyeksi:** `117.12`
+- **Outlook:** Nilai Tukar Petani Jawa Tengah diproyeksikan tetap berada dalam kondisi **Stabil dan Surplus ($NTP > 100$)** hingga akhir 2027.
 
-3. **Pemodelan Time Series**  
-   Menggunakan beberapa metode forecasting:
-   - Moving Average (MA-12)
-   - Holt-Winters
-   - SARIMA
+---
 
-4. **Evaluasi Model**  
-   Model dievaluasi menggunakan:
-   - MAE
-   - RMSE
-   - MAPE
+## 🌐 Fitur Dashboard Interaktif
 
-5. **Forecasting**  
-   Menggunakan model terpilih untuk memproyeksikan NTP pada periode mendatang.
+Dashboard web yang disertakan memiliki fitur-fitur berikut:
+1. **Overview & KPI Eksekutif:** Kartu metrik utama, grafik time series dengan filter rentang tahun, dan distribusi surplus/defisit.
+2. **Tren & Moving Averages:** Toggle interaktif untuk membandingkan NTP Aktual dengan MA-3, MA-6, dan MA-12.
+3. **Analisis Pertumbuhan MoM & YoY:** Visualisasi lonjakan bulanan serta tabel 5 kenaikan & penurunan terbesar.
+4. **Pola Musiman & Dekomposisi:** Radar chart musiman, lintasan bulanan per tahun, serta 4-panel dekomposisi time series (*Observed, Trend, Seasonal, Residual*).
+5. **Evaluasi Model:** Perbandingan visual hasil prediksi 3 model pada data pengujian.
+6. **Proyeksi Masa Depan:** Grafik proyeksi 20 bulan ke depan dengan *95% Confidence Interval*.
+7. **What-If Policy Simulator:** Simulasi interaktif pengaruh guncangan harga gabah, inflasi pupuk/input, atau anomali cuaca (*El Niño/La Niña*).
+8. **Data Explorer:** Tabel data 88 bulan lengkap dengan fitur live search, filter tahun/status, dan tombol unduh CSV.
+9. **Infografis Viewer:** Modal pop-up untuk melihat poster infografis resmi Tim 5.
 
-## Hasil Analisis
+---
 
-Berdasarkan hasil evaluasi:
+## 🚀 Cara Menjalankan Dashboard
 
-| Model | MAE | RMSE | MAPE |
-|---|---:|---:|---:|
-| Moving Average (MA-12) | 1.558 | 1.879 | 1.351 |
-| Holt-Winters | 1.345 | 1.501 | 1.169 |
-| SARIMA | 1.330 | 1.521 | 1.157 |
+### 1. Buka Langsung (Tanpa Instalasi)
+Cukup buka file `index.html` menggunakan browser apapun:
+```bash
+open index.html
+```
 
-Berdasarkan nilai MAPE, **SARIMA menghasilkan nilai error paling rendah sebesar 1,157%** pada hasil pengujian yang dilakukan.
+### 2. Jalankan Local Web Server
+```bash
+python3 -m http.server 8000
+```
+Lalu buka browser di [http://localhost:8000](http://localhost:8000).
 
-Hasil analisis juga menunjukkan adanya perubahan NTP pada beberapa periode penting, termasuk penurunan pada periode pandemi COVID-19 dan peningkatan pada periode setelahnya.
+---
 
-## Proyeksi
+## 📁 Struktur File
+```text
+├── index.html                     # Halaman utama web dashboard interaktif
+├── app.js                         # Logika interaktif, ApexCharts, simulator, filter
+├── data.js                        # Database komputasi terstruktur (88 bulan + proyeksi)
+├── style.css                      # Styling kustom, glassmorphism & responsive layout
+├── NTP_Jawa_Tengah_TIm_5.ipynb    # Jupyter Notebook analisis & pemodelan time series
+├── NTP Provinsi Jawa Tengah.xlsx  # Dataset mentah BPS Provinsi Jawa Tengah
+├── Infografis Tim 5.png           # Poster infografis resmi Tim 5
+├── NTP Jawa Tengah .pdf           # Laporan dokumen lengkap riset
+└── run_dashboard.sh               # Script launcher cepat
+```
 
-Model SARIMA digunakan untuk melakukan proyeksi NTP Jawa Tengah hingga akhir 2027.
-
-Berdasarkan hasil forecasting, NTP diproyeksikan mengalami tren peningkatan dari sekitar **114,9 pada Mei 2026 hingga 118,6 pada akhir 2027**.
-
-## Insight
-
-Beberapa insight yang diperoleh dari analisis:
-
-- NTP Jawa Tengah menunjukkan tren peningkatan dalam jangka panjang.
-- Terdapat fluktuasi NTP secara bulanan yang menunjukkan adanya pola musiman.
-- Periode pandemi COVID-19 memberikan perubahan terhadap nilai NTP.
-- SARIMA memberikan hasil error terendah dibandingkan Moving Average dan Holt-Winters pada pengujian ini.
-- Monitoring NTP secara berkala dapat membantu melihat perubahan kondisi ekonomi petani.
-
-## Rekomendasi
-
-Beberapa langkah strategis yang dapat dipertimbangkan berdasarkan hasil analisis:
-
-- Meningkatkan efisiensi distribusi dengan memperluas akses pasar digital.
-- Melakukan monitoring berbasis data NTP bulanan.
-- Mengembangkan perlindungan atau asuransi usaha tani untuk mengurangi risiko gagal panen.
-
-## Visualisasi
-
-Hasil analisis dan forecasting disajikan dalam bentuk infografis:
-
-![Infografis Analisis NTP Jawa Tengah](Infografis%20Tim%205.png)
-
-## Tools
-
-- Python
-- Pandas
-- NumPy
-- Matplotlib
-- Time Series Analysis
-- SARIMA
-- Holt-Winters
-- Moving Average
-
-## Tim
-
-**Tim Wujud Asli Viewer Windah Basudara**
-
-Universitas Negeri Surabaya

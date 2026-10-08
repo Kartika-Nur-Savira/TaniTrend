@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriData Jateng — Analisis & Forecasting Nilai Tukar Petani | Tim 5</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              300: '#6ee7b7',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            sidebar: {
+              900: '#111b15',
+              800: '#16241c',
+              700: '#1f3327',
+              600: '#2b4435'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- ApexCharts -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex antialiased transition-colors duration-300">
+
+  <!-- ========================================================================= -->
+  <!-- SIDEBAR NAVIGATION (INSPIRASI DAGANG CERDAS) -->
+  <!-- ========================================================================= -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-sidebar-900 text-slate-300 flex flex-col justify-between border-r border-sidebar-700/60 transition-transform duration-300 -translate-x-full md:translate-x-0 no-print select-none shadow-2xl">
+    
+    <!-- Top Branding & Navigation -->
+    <div class="flex-1 overflow-y-auto px-4 py-5 space-y-6">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3 px-2">
+        <div class="w-10 h-10 rounded-xl gradient-emerald flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+          <i data-lucide="sprout" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white tracking-wide flex items-center">
+            AgriData<span class="text-emerald-400">Jateng</span>
+          </h1>
+          <p class="text-[11px] text-emerald-300/70 font-medium">NTP Forecasting Intelligence</p>
+        </div>
+      </div>
+
+      <!-- Navigation Groups -->
+      <div class="space-y-5">
+        
+        <!-- Group 1: Mulai di Sini -->
+        <div class="space-y-1">
+          <div class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400/80">
+            Mulai di Sini
+          </div>
+          <button data-tab="landing" class="sidebar-nav-btn active flex items-center space-x-2.5">
+            <i data-lucide="home" class="w-4 h-4"></i>
+            <span>Beranda &amp; Panduan</span>
+          </button>
+          <button data-tab="overview" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>Overview Eksekutif</span>
+          </button>
+        </div>
+
+        <!-- Group 2: Analisis Time Series -->
+        <div class="space-y-1">
+          <div class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400/80">
+            Analisis Time Series
+          </div>
+          <button data-tab="trends" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="trending-up" class="w-4 h-4"></i>
+            <span>Tren &amp; Moving Average</span>
+          </button>
+          <button data-tab="growth" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+            <span>Fluktuasi MoM &amp; YoY</span>
+          </button>
+          <button data-tab="seasonality" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="calendar" class="w-4 h-4"></i>
+            <span>Musiman &amp; Dekomposisi</span>
+          </button>
+        </div>
+
+        <!-- Group 3: Forecasting Intelligence -->
+        <div class="space-y-1">
+          <div class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400/80">
+            Forecasting &amp; AI
+          </div>
+          <button data-tab="models" class="sidebar-nav-btn flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <i data-lucide="cpu" class="w-4 h-4"></i>
+              <span>Evaluasi Model</span>
+            </div>
+            <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">SARIMA</span>
+          </button>
+          <button data-tab="projections" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Proyeksi 2026–2027</span>
+          </button>
+          <button data-tab="simulator" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="sliders" class="w-4 h-4"></i>
+            <span>What-If Simulator</span>
+          </button>
+        </div>
+
+        <!-- Group 4: Data & Dokumen -->
+        <div class="space-y-1">
+          <div class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400/80">
+            Kelola Data &amp; Riset
+          </div>
+          <button data-tab="explorer" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="database" class="w-4 h-4"></i>
+            <span>Data Explorer</span>
+          </button>
+          <button data-tab="insights" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="lightbulb" class="w-4 h-4"></i>
+            <span>Rekomendasi Kebijakan</span>
+          </button>
+          <button data-tab="infografis" class="sidebar-nav-btn flex items-center space-x-2.5">
+            <i data-lucide="image" class="w-4 h-4"></i>
+            <span>Infografis Tim 5</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom User / Team Info -->
+    <div class="p-4 border-t border-sidebar-700/60 bg-sidebar-900/60 space-y-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shadow">
+          T5
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-semibold text-white truncate">Tim 5 Riset NTP</p>
+          <p class="text-[10px] text-slate-400 truncate">Kartika &amp; Diyanti</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between text-[11px] text-emerald-400/90 pt-1">
+        <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> BPS Jawa Tengah</span>
+        <span class="font-mono text-[10px] text-slate-400">2019–2026</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- SIDEBAR BACKDROP (Mobile) -->
+  <div id="sidebarBackdrop" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm hidden md:hidden"></div>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN CONTENT AREA -->
+  <!-- ========================================================================= -->
+  <div class="flex-1 md:ml-64 flex flex-col min-w-0 min-h-screen">
+    
+    <!-- TOP HEADER / NAVBAR -->
+    <header class="sticky top-0 z-30 glass-panel border-b border-slate-200/80 dark:border-slate-800/80 px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between no-print">
+      
+      <!-- Left: Mobile Toggle & Breadcrumb -->
+      <div class="flex items-center space-x-3">
+        <button id="btnMobileSidebar" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white md:hidden hover:bg-slate-200/60 dark:hover:bg-slate-800">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <div>
+          <div class="flex items-center space-x-1.5 text-xs text-slate-600 dark:text-slate-300">
+            <span>AgriData Jateng</span>
+            <span>/</span>
+            <span id="breadcrumbCurrent" class="text-emerald-700 dark:text-emerald-400 font-bold">Beranda</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live Data Badge & Action Buttons -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Live Data Badge (Style DagangCerdas) -->
+        <div class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Data valid BPS &bull; Terakhir: <strong class="font-mono-num">Apr 2026 (114.90)</strong></span>
+        </div>
+
+        <!-- Export CSV Button -->
+        <button id="btnExportCSV" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl text-slate-700 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition shadow-sm" title="Unduh Dataset CSV">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span class="hidden md:inline">Unduh CSV</span>
+        </button>
+
+        <!-- Print / PDF Button -->
+        <button onclick="window.print()" class="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-800 transition" title="Cetak / PDF">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button id="btnThemeToggle" class="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-800 transition" title="Ganti Mode Gelap/Terang">
+          <i data-lucide="moon" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+          <i data-lucide="sun" class="w-4 h-4 block dark:hidden text-amber-500"></i>
+        </button>
+
+      </div>
+    </header>
+
+    <!-- MAIN APP PAGES CONTAINER -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
+
+      <!-- ===================================================================== -->
+      <!-- TAB 0: BERANDA & LANDING HERO (INSPIRASI GAMBAR 2: PERTANIAN MODERN) -->
+      <!-- ===================================================================== -->
+      <div id="tab-landing" class="tab-pane space-y-8 active">
+        
+        <!-- HERO BANNER (PERTANIAN MODERN JAWA TENGAH) -->
+        <div class="relative overflow-hidden rounded-3xl gradient-hero-dark p-6 sm:p-10 lg:p-12 text-white shadow-2xl border border-emerald-500/20">
+          <div class="hero-glow"></div>
+          
+          <div class="relative z-10 space-y-6 max-w-4xl">
+            <div class="flex flex-wrap items-center gap-2.5">
+              <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-emerald-300 border border-emerald-400/30">
+                <i data-lucide="sprout" class="w-3.5 h-3.5 mr-1.5 text-emerald-400"></i> PLATFORM ANALISIS &amp; FORECASTING DIGITAL
+              </span>
+              <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-white/10 backdrop-blur-md text-slate-200 border border-white/20">
+                <i data-lucide="users" class="w-3.5 h-3.5 mr-1.5 text-indigo-300"></i> Tim 5: Kartika Nur Savira &amp; Diyanti Pratiwi
+              </span>
+            </div>
+
+            <div class="space-y-2">
+              <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Pertanian modern &amp; intelijen data <br>
+                <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-300 bg-clip-text text-transparent">
+                  untuk kesejahteraan petani Jawa Tengah
+                </span>
+              </h2>
+              <p class="text-slate-200 text-sm sm:text-base leading-relaxed max-w-2xl pt-2">
+                Sistem analitik time series terintegrasi yang memetakan tren historis 88 bulan, dekomposisi variasi musiman siklikal, dan benchmarking algoritma peramalan <strong>SARIMA</strong>, <strong>Holt-Winters</strong>, serta <strong>Moving Average</strong> hingga Desember 2027.
+              </p>
+            </div>
+
+            <!-- Big Stat Numbers (Style Gambar 2) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-white/15">
+              <div>
+                <div class="text-2xl sm:text-3xl font-extrabold font-mono-num text-emerald-300">88 Bulan</div>
+                <div class="text-xs text-slate-300 font-medium">Data BPS (2019–2026)</div>
+              </div>
+              <div>
+                <div class="text-2xl sm:text-3xl font-extrabold font-mono-num text-teal-300">+10.73%</div>
+                <div class="text-xs text-slate-300 font-medium">Tren Kenaikan Total</div>
+              </div>
+              <div>
+                <div class="text-2xl sm:text-3xl font-extrabold font-mono-num text-cyan-300">1.157%</div>
+                <div class="text-xs text-slate-300 font-medium">MAPE Terbaik (SARIMA)</div>
+              </div>
+              <div>
+                <div class="text-2xl sm:text-3xl font-extrabold font-mono-num text-amber-300">98.86%</div>
+                <div class="text-xs text-slate-300 font-medium">Periode Surplus Petani</div>
+              </div>
+            </div>
+
+            <!-- Quick Access Actions Buttons -->
+            <div class="flex flex-wrap items-center gap-3 pt-2">
+              <button onclick="navigateToTab('overview')" class="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center space-x-2 shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-0.5">
+                <span>Buka Dashboard Overview</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+              <button onclick="navigateToTab('models')" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition flex items-center space-x-2">
+                <i data-lucide="cpu" class="w-4 h-4 text-emerald-300"></i>
+                <span>Lihat Evaluasi Model</span>
+              </button>
+              <button onclick="navigateToTab('projections')" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition flex items-center space-x-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
+                <span>Proyeksi 2026–2027</span>
+              </button>
+              <button onclick="navigateToTab('simulator')" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition flex items-center space-x-2">
+                <i data-lucide="sliders" class="w-4 h-4 text-indigo-300"></i>
+                <span>What-If Simulator</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 3 FEATURE PILLARS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="glass-card rounded-3xl p-6 space-y-3 cursor-pointer" onclick="navigateToTab('trends')">
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center">
+              <i data-lucide="trending-up" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Analisis Tren &amp; Smoothing</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Eksplorasi pergerakan data historis dengan filter Moving Average 3, 6, dan 12 bulan untuk melihat tren jangka panjang bebas noise musiman.
+            </p>
+            <div class="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center pt-1">
+              <span>Buka Analisis Tren</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-1"></i>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-3xl p-6 space-y-3 cursor-pointer" onclick="navigateToTab('seasonality')">
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 flex items-center justify-center">
+              <i data-lucide="calendar" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Pola Musiman &amp; Dekomposisi</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Membedah siklus 12 bulan panen raya vs pra-panen dengan dekomposisi aditif dan uji stasioneritas Augmented Dickey-Fuller (ADF).
+            </p>
+            <div class="text-xs font-bold text-purple-600 dark:text-purple-400 flex items-center pt-1">
+              <span>Buka Dekomposisi</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-1"></i>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-3xl p-6 space-y-3 cursor-pointer" onclick="navigateToTab('models')">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center">
+              <i data-lucide="cpu" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">Forecasting AI &amp; Benchmarking</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Evaluasi akurasi SARIMAX(0,1,1)(2,0,0)[12] melawan Holt-Winters dan MA-12 dengan metrik MAE, RMSE, dan MAPE terendah 1.157%.
+            </p>
+            <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center pt-1">
+              <span>Buka Evaluasi Model</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5 ml-1"></i>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 1: OVERVIEW EKSEKUTIF (DASHBOARD STYLE GAMBAR 1 DAGANGCERDAS) -->
+      <!-- ===================================================================== -->
+      <div id="tab-overview" class="tab-pane space-y-6 hidden">
+        
+        <!-- TOP 4 STAT CARDS (INSPIRASI STYLE GAMBAR 1) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- Card 1: NTP Terkini -->
+          <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border-l-4 border-emerald-500">
+            <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider flex items-center">
+                <i data-lucide="check-circle" class="w-4 h-4 mr-1.5 text-emerald-600"></i> NTP Terkini
+              </span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Surplus</span>
+            </div>
+            <div>
+              <div class="text-3xl font-extrabold font-mono-num text-slate-900 dark:text-white">114.90</div>
+              <div class="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center mt-1">
+                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 mr-0.5"></i> +0.15 MoM dari Mar 2026
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Rata-Rata Historis -->
+          <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border-l-4 border-blue-500">
+            <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider flex items-center">
+                <i data-lucide="calculator" class="w-4 h-4 mr-1.5 text-blue-600"></i> Rata-Rata Historis
+              </span>
+              <span class="text-[10px] text-slate-400">88 Bulan</span>
+            </div>
+            <div>
+              <div class="text-3xl font-extrabold font-mono-num text-slate-900 dark:text-white">107.61</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Std Deviasi: <span class="font-mono-num font-semibold text-slate-700 dark:text-slate-300">±6.11</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Model Akurasi Terbaik -->
+          <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border-l-4 border-indigo-500">
+            <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider flex items-center text-indigo-600 dark:text-indigo-400">
+                <i data-lucide="award" class="w-4 h-4 mr-1.5"></i> Model Terbaik
+              </span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">SARIMA</span>
+            </div>
+            <div>
+              <div class="text-3xl font-extrabold font-mono-num text-indigo-600 dark:text-indigo-400">1.157%</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Error MAPE Paling Minim
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Proyeksi Rata-Rata -->
+          <div class="glass-card rounded-2xl p-5 flex flex-col justify-between border-l-4 border-amber-500">
+            <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider flex items-center text-amber-600 dark:text-amber-400">
+                <i data-lucide="sparkles" class="w-4 h-4 mr-1.5"></i> Proyeksi 2026/27
+              </span>
+              <span class="text-[10px] text-slate-400">20 Bln ke Depan</span>
+            </div>
+            <div>
+              <div class="text-3xl font-extrabold font-mono-num text-slate-900 dark:text-white">117.12</div>
+              <div class="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
+                Kondisi Stabil di atas 100
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 2 WIDGETS: SOROTAN & RINGKASAN AI (MIRIP GAMBAR 1) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Sorotan Analisis (7 cols) -->
+          <div class="lg:col-span-7 glass-card rounded-3xl p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="flame" class="w-5 h-5 text-amber-500"></i>
+                <span>Sorotan Kunci Kesejahteraan Petani</span>
+              </h3>
+              <span class="text-xs text-slate-400">BPS Jawa Tengah</span>
+            </div>
+
+            <ul class="space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
+              <li class="flex items-start space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span>
+                <span><strong>Pertumbuhan Positif:</strong> NTP Jawa Tengah naik dari <strong>103.77</strong> (Jan 2019) ke <strong>114.90</strong> (Apr 2026), meningkat <strong>+10.73%</strong>.</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 shrink-0"></span>
+                <span><strong>Puncak Historis:</strong> Rekor tertinggi dicapai pada <strong>Februari 2024 (121.94)</strong> didorong harga komoditas pangan pokok di tingkat produsen.</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="w-2 h-2 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
+                <span><strong>Periode Kritis:</strong> Satu-satunya titik defisit riil ($NTP < 100$) terjadi pada <strong>April 2021 (98.71)</strong> saat puncak pandemi COVID-19.</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 shrink-0"></span>
+                <span><strong>Pola Siklus Panen Raya:</strong> Setiap bulan Maret–Mei terjadi penurunan musiman rata-rata <strong>-2.12 poin</strong> akibat melimpahnya suplai pasca-panen.</span>
+              </li>
+            </ul>
+
+            <!-- AI Summary Box (Style DagangCerdas) -->
+            <div class="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/80 space-y-1.5">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 flex items-center">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 mr-1 text-amber-500"></i> RINGKASAN MODEL SARIMA
+              </div>
+              <p class="text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
+                Model SARIMAX(0,1,1)(2,0,0)[12] memproyeksikan NTP Jawa Tengah sepanjang Mei 2026 hingga Desember 2027 akan bergerak di rentang <strong>114.92 – 118.69</strong> (rata-rata 117.12). Daya beli petani diperkirakan tetap terjaga kuat di zona surplus.
+              </p>
+            </div>
+          </div>
+
+          <!-- Distribusi Surplus vs Defisit (5 cols) -->
+          <div class="lg:col-span-5 glass-card rounded-3xl p-6 space-y-4 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="pie-chart" class="w-5 h-5 text-teal-600"></i>
+                <span>Distribusi Status Kesejahteraan</span>
+              </h3>
+            </div>
+
+            <div id="chartSurplusDonut" class="h-44 flex items-center justify-center"></div>
+
+            <div class="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500 dark:text-slate-400">Bulan Surplus (&gt; 100):</span>
+                <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono-num">87 Bulan (98.86%)</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500 dark:text-slate-400">Bulan Defisit (&lt; 100):</span>
+                <span class="font-bold text-rose-600 dark:text-rose-400 font-mono-num">1 Bulan (1.14%)</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500 dark:text-slate-400">Rentang Interkuartil (IQR):</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200 font-mono-num">102.16 – 113.47</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- MAIN TREND CHART -->
+        <div class="glass-card rounded-3xl p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="activity" class="w-5 h-5 text-emerald-600"></i>
+                <span>Grafik Dinamika NTP Jawa Tengah (2019–2026)</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Garis merah menunjukkan batas kesejahteraan petani (<span class="font-semibold text-rose-500">NTP = 100</span>).
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl text-xs font-semibold">
+              <button class="filter-preset-btn active px-3 py-1.5 rounded-xl transition" data-range="all">Semua Data</button>
+              <button class="filter-preset-btn px-3 py-1.5 rounded-xl transition text-slate-600 dark:text-slate-400" data-range="2019-2021">Pandemi (2019-21)</button>
+              <button class="filter-preset-btn px-3 py-1.5 rounded-xl transition text-slate-600 dark:text-slate-400" data-range="2022-2024">Pemulihan (2022-24)</button>
+              <button class="filter-preset-btn px-3 py-1.5 rounded-xl transition text-slate-600 dark:text-slate-400" data-range="2024-2026">Terkini (2024-26)</button>
+            </div>
+          </div>
+
+          <div id="chartOverviewMain" class="chart-container"></div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 2: TREN & MOVING AVERAGES -->
+      <!-- ===================================================================== -->
+      <div id="tab-trends" class="tab-pane space-y-6 hidden">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="trending-up" class="w-5 h-5 text-emerald-600"></i>
+                <span>Analisis Perataan Bergerak (Moving Averages)</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Membandingkan fluktuasi aktual dengan MA-3 (jangka pendek), MA-6 (jangka menengah), dan MA-12 (tren tahunan).
+              </p>
+            </div>
+
+            <!-- Series Toggles -->
+            <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
+              <label class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 cursor-pointer">
+                <input type="checkbox" id="chkNTP" checked class="rounded text-blue-600">
+                <span>NTP Aktual</span>
+              </label>
+              <label class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 cursor-pointer">
+                <input type="checkbox" id="chkMA3" checked class="rounded text-amber-600">
+                <span>MA-3</span>
+              </label>
+              <label class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800 cursor-pointer">
+                <input type="checkbox" id="chkMA6" checked class="rounded text-orange-600">
+                <span>MA-6</span>
+              </label>
+              <label class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 cursor-pointer">
+                <input type="checkbox" id="chkMA12" checked class="rounded text-purple-600">
+                <span>MA-12</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="chartTrendsMA" class="chart-container"></div>
+
+          <div class="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/60 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+            <strong>Insight Analisis Moving Average:</strong> Garis MA-12 (warna ungu) secara mulus mengeliminasi noise fluktuasi musiman jangka pendek, memperlihatkan kurva akselerasi kenaikan NTP yang konsisten mendaki mulai awal tahun 2022 hingga melandai di kisaran 115-116 pada 2025–2026.
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 3: PERTUMBUHAN MOM & YOY -->
+      <!-- ===================================================================== -->
+      <div id="tab-growth" class="tab-pane space-y-6 hidden">
+        
+        <!-- MoM Chart -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-600"></i>
+              <span>Perubahan Bulanan (Month-over-Month / MoM)</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Menunjukkan lonjakan bulanan (bar hijau) vs penurunan bulanan (bar merah).
+            </p>
+          </div>
+
+          <div id="chartMoM" class="chart-container"></div>
+        </div>
+
+        <!-- 2 Tables: Top 5 Kenaikan & Penurunan Terbesar -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Top 5 Naik -->
+          <div class="glass-card rounded-3xl p-6 space-y-4">
+            <div class="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400">
+              <i data-lucide="trending-up" class="w-5 h-5"></i>
+              <h4 class="font-bold text-slate-900 dark:text-white">5 Kenaikan MoM Terbesar</h4>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-200 uppercase font-semibold">
+                  <tr>
+                    <th class="p-2.5 rounded-l-xl">Periode</th>
+                    <th class="p-2.5">NTP</th>
+                    <th class="p-2.5 text-right rounded-r-xl">Kenaikan (Poin)</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-mono-num">
+                  <tr><td class="p-2.5 font-sans font-medium">Februari 2024</td><td class="p-2.5">121.94</td><td class="p-2.5 text-right font-bold text-emerald-600">+3.74</td></tr>
+                  <tr><td class="p-2.5 font-sans font-medium">September 2023</td><td class="p-2.5">114.73</td><td class="p-2.5 text-right font-bold text-emerald-600">+2.62</td></tr>
+                  <tr><td class="p-2.5 font-sans font-medium">Oktober 2023</td><td class="p-2.5">117.04</td><td class="p-2.5 text-right font-bold text-emerald-600">+2.31</td></tr>
+                  <tr><td class="p-2.5 font-sans font-medium">Juni 2024</td><td class="p-2.5">116.14</td><td class="p-2.5 text-right font-bold text-emerald-600">+2.23</td></tr>
+                  <tr><td class="p-2.5 font-sans font-medium">Juni 2025</td><td class="p-2.5">115.90</td><td class="p-2.5 text-right font-bold text-emerald-600">+2.05</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Top 5 Turun -->
+          <div class="glass-card rounded-3xl p-6 space-y-4">
+            <div class="flex items-center space-x-2 text-rose-600 dark:text-rose-400">
+              <i data-lucide="trending-down" class="w-5 h-5"></i>
+              <h4 class="font-bold text-slate-900 dark:text-white">5 Penurunan MoM Terbesar</h4>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-rose-50 dark:bg-rose-950/50 text-rose-800 dark:text-rose-200 uppercase font-semibold">
+                  <tr>
+                    <th class="p-2.5 rounded-l-xl">Periode</th>
+                    <th class="p-2.5">NTP</th>
+                    <th class="p-2.5 text-right rounded-r-xl">Penurunan (Poin)</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-mono-num">
+                  <tr><td class="p-2.5 font-sans font-medium">Maret 2024</td><td class="p-2.5">116.02</td><td class="p-2.5 text-right font-bold text-rose-600">-5.92</td></tr>
+                  <tr><td class="p-2.5 font-sans font-medium">April 2024</td><td class="p-2.5">110.97</td><td class="p-2.5 text-right font-bold text-rose-600">-5.05</td></tr>
+                  <tr><td class="p-2.5 font-sans font-medium">Januari 2026</td><td class="p-2.5">115.23</td><td class="p-2.5 text-right font-bold text-rose-600">-2.82</td></tr>
+                  <tr><td class="p-2.5 font-sans font-medium">Januari 2020</td><td class="p-2.5">104.03</td><td class="p-2.5 text-right font-bold text-rose-600">-1.97</td></tr>
+                  <tr><td class="p-2.5 font-sans font-medium">April 2022</td><td class="p-2.5">103.77</td><td class="p-2.5 text-right font-bold text-rose-600">-1.69</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- YoY Growth Chart -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <i data-lucide="line-chart" class="w-5 h-5 text-teal-600"></i>
+              <span>Pertumbuhan Tahunan (Year-over-Year / YoY)</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Mengukur perubahan NTP dibandingkan bulan yang sama pada tahun sebelumnya.
+            </p>
+          </div>
+
+          <div id="chartYoY" class="chart-container"></div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 4: MUSIMAN & DEKOMPOSISI -->
+      <!-- ===================================================================== -->
+      <div id="tab-seasonality" class="tab-pane space-y-6 hidden">
+        
+        <!-- Seasonal Pattern Line by Year & Radar Chart -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <div class="lg:col-span-8 glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="calendar" class="w-5 h-5 text-emerald-600"></i>
+                <span>Pola Musiman Antar-Tahun (Januari – Desember)</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Visualisasi lintasan pergerakan NTP dari bulan 1 sampai 12 untuk setiap tahun observasi (2019–2026).
+              </p>
+            </div>
+
+            <div id="chartSeasonalYears" class="chart-container"></div>
+          </div>
+
+          <div class="lg:col-span-4 glass-card rounded-3xl p-6 sm:p-8 space-y-5">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <i data-lucide="compass" class="w-5 h-5 text-indigo-600"></i>
+              <span>Faktor Musiman Rata-Rata</span>
+            </h3>
+
+            <div id="chartSeasonalRadar" class="h-52"></div>
+
+            <div class="space-y-2 text-xs">
+              <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300">
+                <div class="font-bold flex items-center"><i data-lucide="arrow-up" class="w-3.5 h-3.5 mr-1"></i> Puncak Musiman:</div>
+                <div class="mt-0.5">Februari (+1.33) &amp; Desember (+1.25) didorong permintaan akhir tahun dan pasokan pra-panen.</div>
+              </div>
+              <div class="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300">
+                <div class="font-bold flex items-center"><i data-lucide="arrow-down" class="w-3.5 h-3.5 mr-1"></i> Titik Nadir Musiman:</div>
+                <div class="mt-0.5">April (-2.12) &amp; Mei (-1.91) karena efek panen raya gabah/padi yang melimpah menurunkan harga jual petani.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Time Series Decomposition 4-Panel Visualization -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <i data-lucide="layers" class="w-5 h-5 text-purple-600"></i>
+              <span>Dekomposisi Time Series (Additive Model)</span>
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Pemisahan sinyal time series menjadi: <span class="font-semibold text-blue-600">Observed</span> = <span class="font-semibold text-emerald-600">Trend</span> + <span class="font-semibold text-purple-600">Seasonal</span> + <span class="font-semibold text-amber-600">Residual</span>.
+            </p>
+          </div>
+
+          <div id="chartDecomposition" class="chart-container" style="min-height: 500px;"></div>
+
+          <!-- ADF Test Card -->
+          <div class="p-5 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <div class="text-indigo-800 dark:text-indigo-300 font-bold uppercase tracking-wider flex items-center">
+                <i data-lucide="check-square" class="w-4 h-4 mr-1.5 text-indigo-600"></i> Uji Stasioneritas: ADF Test (Level)
+              </div>
+              <p class="text-slate-700 dark:text-slate-300">
+                ADF Stat: <strong class="font-mono-num">-2.484</strong> | p-value: <strong class="font-mono-num">0.119 (&gt; 0.05)</strong><br>
+                <span class="text-rose-600 dark:text-rose-400 font-semibold">Data Level Tidak Stasioner</span> sehingga memerlukan proses differencing ($d=1$).
+              </p>
+            </div>
+            <div class="space-y-1.5">
+              <div class="text-emerald-800 dark:text-emerald-300 font-bold uppercase tracking-wider flex items-center">
+                <i data-lucide="check-circle" class="w-4 h-4 mr-1.5 text-emerald-600"></i> ADF Test (First Difference d=1)
+              </div>
+              <p class="text-slate-700 dark:text-slate-300">
+                ADF Stat: <strong class="font-mono-num">-8.214</strong> | p-value: <strong class="font-mono-num">&lt; 0.0001 (&lt; 0.05)</strong><br>
+                <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Stasioner &amp; Layak</span> untuk pemodelan SARIMA(0,1,1)(2,0,0)[12].
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 5: EVALUASI MODEL FORECASTING -->
+      <!-- ===================================================================== -->
+      <div id="tab-models" class="tab-pane space-y-6 hidden">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="cpu" class="w-5 h-5 text-emerald-600"></i>
+                <span>Evaluasi &amp; Validasi Model pada Test Set (80/20 Split)</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Data Training: <strong>70 Bulan</strong> (Jan 2019 – Okt 2024) | Data Testing: <strong>18 Bulan</strong> (Nov 2024 – Apr 2026).
+              </p>
+            </div>
+
+            <button onclick="triggerConfetti()" class="px-4 py-2 rounded-xl gradient-emerald text-white text-xs font-bold shadow-lg shadow-emerald-500/20 hover:opacity-95 transition flex items-center space-x-2">
+              <i data-lucide="trophy" class="w-4 h-4"></i>
+              <span>Highlight Model Terbaik</span>
+            </button>
+          </div>
+
+          <!-- Metrics Comparison Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- SARIMA Card -->
+            <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border-2 border-emerald-500 dark:border-emerald-400 relative overflow-hidden space-y-4">
+              <div class="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-500 text-white shadow">
+                Pemenang #1
+              </div>
+              <div>
+                <div class="text-xs text-emerald-700 dark:text-emerald-300 font-bold uppercase">Model Terbaik</div>
+                <h4 class="text-xl font-extrabold text-slate-900 dark:text-white">SARIMA (Auto)</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-mono">SARIMAX(0,1,1)(2,0,0)[12]</p>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-2 pt-2 border-t border-emerald-200 dark:border-emerald-800 text-center font-mono-num">
+                <div>
+                  <div class="text-[10px] text-slate-500">MAE</div>
+                  <div class="text-base font-bold text-slate-900 dark:text-white">1.330</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-500">RMSE</div>
+                  <div class="text-base font-bold text-slate-900 dark:text-white">1.521</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">MAPE</div>
+                  <div class="text-base font-extrabold text-emerald-600 dark:text-emerald-400">1.157%</div>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Mampu menangkap residual moving average orde 1 serta autokorelasi musiman 12 &amp; 24 bulan secara optimal.
+              </p>
+            </div>
+
+            <!-- Holt-Winters Card -->
+            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs text-slate-500 font-bold uppercase">Peringkat #2</div>
+                  <h4 class="text-xl font-bold text-slate-900 dark:text-white">Holt-Winters</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 font-mono">Triple Exp Smoothing (Add)</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700 text-center font-mono-num">
+                <div>
+                  <div class="text-[10px] text-slate-500">MAE</div>
+                  <div class="text-base font-bold text-slate-900 dark:text-white">1.345</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-500">RMSE</div>
+                  <div class="text-base font-bold text-slate-900 dark:text-white">1.501</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-500 font-bold">MAPE</div>
+                  <div class="text-base font-bold text-slate-900 dark:text-white">1.169%</div>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Sangat kompetitif dengan RMSE sedikit lebih rendah (1.501), namun MAPE terpaut 0.012% di belakang SARIMA.
+              </p>
+            </div>
+
+            <!-- Moving Average Card -->
+            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs text-slate-500 font-bold uppercase">Baseline</div>
+                  <h4 class="text-xl font-bold text-slate-900 dark:text-white">Moving Average</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 font-mono">Rolling Window 12 Bulan</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700 text-center font-mono-num">
+                <div>
+                  <div class="text-[10px] text-slate-500">MAE</div>
+                  <div class="text-base font-bold text-slate-900 dark:text-white">1.558</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-500">RMSE</div>
+                  <div class="text-base font-bold text-slate-900 dark:text-white">1.879</div>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-500 font-bold">MAPE</div>
+                  <div class="text-base font-bold text-slate-900 dark:text-white">1.351%</div>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Sebagai model baseline, MA-12 cenderung terlambat mendeteksi akselerasi tren dan perubahan musiman tajam.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Full Train-Test Comparison Chart -->
+          <div class="space-y-3 pt-4">
+            <h4 class="text-base font-bold text-slate-900 dark:text-white">
+              Visualisasi Prediksi Model vs Aktual (Periode Pengujian)
+            </h4>
+            <div id="chartTestComparison" class="chart-container"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 6: PROYEKSI MASA DEPAN (2026–2027) -->
+      <!-- ===================================================================== -->
+      <div id="tab-projections" class="tab-pane space-y-6 hidden">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="p-2 rounded-xl bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300">
+                  <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </span>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">
+                  Proyeksi Nilai Tukar Petani (Mei 2026 – Desember 2027)
+                </h3>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Hasil retraining ketiga model dengan 100% data historis + Selang Kepercayaan 95% ($\pm 1.96 \times RMSE$).
+              </p>
+            </div>
+
+            <!-- Model Selector for Forecast Chart -->
+            <div class="flex items-center space-x-2 text-xs font-semibold">
+              <span class="text-slate-500">Fokus Model:</span>
+              <select id="selForecastModel" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">
+                <option value="all">Semua Model (SARIMA + HW + MA)</option>
+                <option value="sarima" selected>SARIMA (Rekomendasi Utama)</option>
+                <option value="hw">Holt-Winters</option>
+                <option value="ma">Moving Average</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="chartProjectionsFuture" class="chart-container"></div>
+
+          <!-- Future Forecast Table Preview -->
+          <div class="space-y-4 pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
+            <div class="flex items-center justify-between">
+              <h4 class="text-base font-bold text-slate-900 dark:text-white">
+                Tabel Angka Proyeksi 20 Bulan ke Depan
+              </h4>
+              <span class="text-xs text-slate-500">20 Periode Proyeksi (Mei 2026 – Des 2027)</span>
+            </div>
+
+            <div class="overflow-x-auto max-h-80 overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-100 dark:bg-slate-800/80 sticky top-0 uppercase font-semibold text-slate-600 dark:text-slate-300">
+                  <tr>
+                    <th class="p-3">Periode</th>
+                    <th class="p-3 text-emerald-600 dark:text-emerald-400 font-bold">SARIMA (Best)</th>
+                    <th class="p-3 text-slate-500">CI 95% Bawah</th>
+                    <th class="p-3 text-slate-500">CI 95% Atas</th>
+                    <th class="p-3">Holt-Winters</th>
+                    <th class="p-3">MA-12</th>
+                    <th class="p-3 text-right">Status Prediksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tblProjectionsBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono-num">
+                  <!-- Injected via app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 7: WHAT-IF SIMULATOR -->
+      <!-- ===================================================================== -->
+      <div id="tab-simulator" class="tab-pane space-y-6 hidden">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="p-2 rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                <i data-lucide="sliders" class="w-5 h-5"></i>
+              </span>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white">
+                Simulator Skenario Kebijakan Pertanian &amp; Inflasi (What-If Analysis)
+              </h3>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Uji sensitivitas angka NTP masa depan terhadap goncangan harga input (pupuk, bibit), inflasi konsumsi, atau kenaikan harga gabah/output.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Controls (4 cols) -->
+            <div class="lg:col-span-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-5">
+              <h4 class="font-bold text-sm text-slate-900 dark:text-white flex items-center">
+                <i data-lucide="settings" class="w-4 h-4 mr-1.5 text-emerald-600"></i> Variabel Guncangan
+              </h4>
+
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-xs font-semibold">
+                  <span>Perubahan Harga Output (It)</span>
+                  <span id="lblOutputShock" class="text-emerald-600 font-mono-num">+0.0%</span>
+                </div>
+                <input type="range" id="rngOutputShock" min="-15" max="15" step="0.5" value="0" class="w-full accent-emerald-600">
+                <p class="text-[10px] text-slate-400">Pengaruh harga jual gabah/komoditas yang diterima petani.</p>
+              </div>
+
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-xs font-semibold">
+                  <span>Inflasi Biaya Input / Pupuk (Ib)</span>
+                  <span id="lblInputShock" class="text-rose-600 font-mono-num">+0.0%</span>
+                </div>
+                <input type="range" id="rngInputShock" min="-15" max="15" step="0.5" value="0" class="w-full accent-rose-600">
+                <p class="text-[10px] text-slate-400">Pengaruh biaya operasional &amp; kebutuhan konsumsi rumah tangga.</p>
+              </div>
+
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-xs font-semibold">
+                  <span>Anomali Iklim (El Nino / La Nina)</span>
+                  <span id="lblClimateShock" class="text-indigo-600 font-mono-num">Netral (0.0)</span>
+                </div>
+                <input type="range" id="rngClimateShock" min="-5" max="5" step="0.5" value="0" class="w-full accent-indigo-600">
+                <p class="text-[10px] text-slate-400">Efek kekeringan / banjir terhadap hasil panen.</p>
+              </div>
+
+              <div class="pt-2 flex space-x-2">
+                <button id="btnResetSim" class="w-full py-2 text-xs font-semibold rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">
+                  Reset Skenario
+                </button>
+              </div>
+            </div>
+
+            <!-- Simulation Chart (8 cols) -->
+            <div class="lg:col-span-8 space-y-4">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-slate-600 dark:text-slate-400">Hasil Simulasi Forecast SARIMA:</span>
+                <span id="simSummaryBadge" class="px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                  Skenario Normal: Rata-rata Proyeksi 117.12
+                </span>
+              </div>
+
+              <div id="chartSimulator" class="chart-container"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 8: DATA EXPLORER & FILTER -->
+      <!-- ===================================================================== -->
+      <div id="tab-explorer" class="tab-pane space-y-6 hidden">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="database" class="w-5 h-5 text-emerald-600"></i>
+                <span>Eksplorasi Dataset NTP Lengkap (88 Bulan)</span>
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Sumber: BPS Provinsi Jawa Tengah (Jan 2019 – Apr 2026).
+              </p>
+            </div>
+
+            <!-- Controls: Year filter, Status filter, Search, Export -->
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <select id="selFilterYear" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">
+                <option value="all">Semua Tahun (2019–2026)</option>
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+              </select>
+
+              <select id="selFilterStatus" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">
+                <option value="all">Semua Status</option>
+                <option value="surplus">Surplus (&gt; 100)</option>
+                <option value="deficit">Defisit (&lt; 100)</option>
+              </select>
+
+              <input type="text" id="txtSearchTable" placeholder="Cari periode..." class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder-slate-400">
+
+              <button id="btnExportTableCSV" class="px-3 py-2 rounded-xl gradient-indigo text-white font-semibold flex items-center space-x-1.5 shadow">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Full Table -->
+          <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 max-h-[520px] overflow-y-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 dark:bg-slate-800/90 uppercase font-semibold text-slate-600 dark:text-slate-300 sticky top-0 z-10 backdrop-blur">
+                <tr>
+                  <th class="p-3">No</th>
+                  <th class="p-3">Periode</th>
+                  <th class="p-3">NTP Aktual</th>
+                  <th class="p-3">MoM</th>
+                  <th class="p-3">YoY</th>
+                  <th class="p-3">MA-3</th>
+                  <th class="p-3">MA-6</th>
+                  <th class="p-3">MA-12</th>
+                  <th class="p-3">Trend</th>
+                  <th class="p-3">Musiman</th>
+                  <th class="p-3">Residual</th>
+                  <th class="p-3 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody id="tblExplorerBody" class="divide-y divide-slate-100 dark:divide-slate-800 font-mono-num">
+                <!-- Injected via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 9: INSIGHT & REKOMENDASI KEBIJAKAN -->
+      <!-- ===================================================================== -->
+      <div id="tab-insights" class="tab-pane space-y-6 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <div class="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <div class="flex items-center space-x-2">
+              <div class="p-2 rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                <i data-lucide="lightbulb" class="w-5 h-5"></i>
+              </div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white">
+                Temuan Empiris &amp; Insight Riset
+              </h3>
+            </div>
+
+            <div class="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+              <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                <h4 class="font-bold text-slate-900 dark:text-white flex items-center text-sm">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 mr-2 text-emerald-600"></i>
+                  1. Tren Kesejahteraan Petani Membaik Secara Struktural
+                </h4>
+                <p>
+                  Nilai Tukar Petani (NTP) Jawa Tengah mengalami peningkatan dari <strong>103.77</strong> (Januari 2019) menjadi <strong>114.90</strong> (April 2026), dengan kenaikan total <strong>+11.13 poin (+10.73%)</strong>. Petani Jawa Tengah rata-rata berada pada posisi surplus daya beli.
+                </p>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                <h4 class="font-bold text-slate-900 dark:text-white flex items-center text-sm">
+                  <i data-lucide="refresh-cw" class="w-4 h-4 mr-2 text-indigo-600"></i>
+                  2. Pola Musiman Berulang (Siklus 12 Bulan yang Kuat)
+                </h4>
+                <p>
+                  Terjadi pola musiman yang sangat konsisten: <strong>puncak pada Februari &amp; Desember</strong> akibat kelangkaan pra-panen &amp; permintaan hari raya, serta <strong>penurunan tajam pada Maret–Mei</strong> akibat tekanan suplai melimpah saat panen raya raya padi.
+                </p>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                <h4 class="font-bold text-slate-900 dark:text-white flex items-center text-sm">
+                  <i data-lucide="award" class="w-4 h-4 mr-2 text-teal-600"></i>
+                  3. Keunggulan Model SARIMA dalam Menangkap Pola
+                </h4>
+                <p>
+                  SARIMAX(0,1,1)(2,0,0)[12] terbukti sebagai model peramalan terbaik dengan <strong>MAPE 1.157%</strong>. Model ini secara akurat memetakan ketergantungan musiman multi-tahun (lag 12 dan lag 24) dibandingkan model exponential smoothing maupun moving average.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <div class="flex items-center space-x-2">
+              <div class="p-2 rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                <i data-lucide="bookmark" class="w-5 h-5"></i>
+              </div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white">
+                Rekomendasi Kebijakan (Policy Memo)
+              </h3>
+            </div>
+
+            <div class="space-y-3.5 text-xs text-slate-700 dark:text-slate-300">
+              <div class="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-1">
+                <div class="font-bold text-amber-900 dark:text-amber-200">
+                  1. Stabilisasi Harga Panen Raya (Maret–Mei)
+                </div>
+                <p>
+                  Perlu optimalisasi penyerapan gabah oleh Bulog dan penguatan fasilitas pengeringan (dryer) &amp; lumbung pangan desa guna mencegah anjloknya harga gabah kering panen di tingkat petani.
+                </p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-1">
+                <div class="font-bold text-emerald-900 dark:text-emerald-200">
+                  2. Pengendalian Biaya Input Produksi
+                </div>
+                <p>
+                  Memastikan ketersediaan dan ketepatan distribusi pupuk bersubsidi, benih unggul bersertifikasi, serta subsidi bahan bakar alat mesin pertanian (alsintan).
+                </p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 space-y-1">
+                <div class="font-bold text-indigo-900 dark:text-indigo-200">
+                  3. Sistem Peringatan Dini (Early Warning System)
+                </div>
+                <p>
+                  Mengadopsi model SARIMA sebagai sistem peringatan dini bagi Dinas Pertanian &amp; Ketahanan Pangan Jawa Tengah untuk mengantisipasi potensi tekanan defisit nilai tukar sebelum musim panen tiba.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 10: INFOGRAFIS RESMI TIM 5 -->
+      <!-- ===================================================================== -->
+      <div id="tab-infografis" class="tab-pane space-y-6 hidden">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <i data-lucide="image" class="w-5 h-5 text-emerald-600"></i>
+                <span>Infografis Resmi Tim 5: Nilai Tukar Petani Jawa Tengah</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                Visualisasi infografis hasil penelitian Kartika Nur Savira &amp; Diyanti Pratiwi.
+              </p>
+            </div>
+
+            <a href="Infografis Tim 5.png" download="Infografis_Tim_5_NTP_Jateng.png" class="px-4 py-2 rounded-xl gradient-emerald text-white text-xs font-bold shadow-lg shadow-emerald-500/20 hover:opacity-95 transition flex items-center space-x-2">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>Unduh Gambar Asli</span>
+            </a>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-950 flex items-center justify-center overflow-hidden border border-slate-800">
+            <img src="Infografis Tim 5.png" alt="Infografis Tim 5 NTP Jawa Tengah" class="max-w-full max-h-[78vh] object-contain rounded-xl shadow-2xl">
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 py-6 px-4 sm:px-6 lg:px-8 no-print">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="sprout" class="w-4 h-4 text-emerald-600"></i>
+          <span>AgriData Jateng &bull; Riset Forecasting Nilai Tukar Petani &bull; <strong>Tim 5</strong></span>
+        </div>
+        <div>
+          Peneliti: <span class="font-semibold text-slate-700 dark:text-slate-300">Kartika Nur Savira &amp; Diyanti Pratiwi</span> | Data: <span class="font-semibold">BPS Jateng</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- LOAD APPLICATION SCRIPTS -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
