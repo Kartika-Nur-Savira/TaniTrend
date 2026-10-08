@@ -61,21 +61,8 @@ Dashboard web yang disertakan memiliki fitur-fitur berikut:
 
 ---
 
-## 🚀 Cara Menjalankan Dashboard
-
-### 1. Buka Langsung (Tanpa Instalasi)
-Cukup buka file `index.html` menggunakan browser apapun:
-```bash
-open index.html
-```
-
-### 2. Jalankan Local Web Server
-```bash
-python3 -m http.server 8000
-```
-Lalu buka browser di [http://localhost:8000](http://localhost:8000).
-
----
+## 🚀 Live Dashboard
+https://agridata-ntpjateng.vercel.app/
 
 ## 📁 Struktur File
 ```text
